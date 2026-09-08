@@ -129,7 +129,11 @@ export class SpiceTokenCard {
   }
 
   firstNamedParamTokenIndex(): number {
-    for (let tokenIndex = 1; tokenIndex < this.tokens.length - 1; tokenIndex += 1) {
+    for (
+      let tokenIndex = 1;
+      tokenIndex < this.tokens.length - 1;
+      tokenIndex += 1
+    ) {
       const next = this.tokens[tokenIndex + 1]
       if (next?.type === "operator" && next.value === "=") return tokenIndex
     }

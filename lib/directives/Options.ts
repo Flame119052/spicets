@@ -24,26 +24,31 @@ export class Options extends DotCommand {
     super(init)
     this.values = new ParamList(values)
     this.flags = init.flags ?? []
-    this.items =
-      init.items ??
-      [
-        ...this.flags.map((name) => ({ name })),
-        ...this.values.entries().map(([name, value]) => ({
-          name,
-          value: value.getString(),
-        })),
-      ]
+    this.items = init.items ?? [
+      ...this.flags.map((name) => ({ name })),
+      ...this.values.entries().map(([name, value]) => ({
+        name,
+        value: value.getString(),
+      })),
+    ]
   }
 
   static fromSpiceTokens(card: SpiceLogicalCard): Options {
     const tokens = SpiceTokenCard.from(card)
     const items = tokens.optionItems()
     const assignments = items.filter(
-      (item): item is { name: string; value: string } => item.value !== undefined,
+      (item): item is { name: string; value: string } =>
+        item.value !== undefined,
     )
-    return new Options(assignments.map((item) => [item.name, item.value]), {
+    const params: Array<[string, string]> = assignments.map((item) => [
+      item.name,
+      item.value,
+    ])
+    return new Options(params, {
       originalSource: tokens.originalSource,
-      flags: items.filter((item) => item.value === undefined).map((item) => item.name),
+      flags: items
+        .filter((item) => item.value === undefined)
+        .map((item) => item.name),
       items,
     })
   }
